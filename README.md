@@ -1,7 +1,7 @@
 # PHPMikAPISQL Class v0.1
  
 Simple class to execute RouterOS Command like SQL (select, insert, update, delete)  
-Dependend with **routeros_api.class.php** (https://github.com/BenMenking/routeros-api)  
+Dependend to **routeros_api.class.php** (https://github.com/BenMenking/routeros-api)  
 Simply you may just change the table name with router's menu (see ``table-list.ini`` in db folder)  
 
 ## SQL Command List
