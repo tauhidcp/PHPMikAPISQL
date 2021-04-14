@@ -19,6 +19,6 @@ Update router config item. for example if you want to edit user from the router 
 Remove config item from the router. for example if you want to remove user from the router you can use ``delete from user where .id='*2'``.  
 
 ### Conclusion  
-The table name is refers to router's menu where stored in ``db/table-list.ini``. just add it manually if it not listed.  
+The table name is refers to router's menu where stored in ``db/table-list.ini``. just add it manually if it not listed yet.  
 The table's field is refers to property of router's menu. you can see the output of the ``SELECT`` command where the keys in the array are what I mean.  
  
