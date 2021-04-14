@@ -3,6 +3,7 @@
 Simple class to execute RouterOS Command like SQL (select, insert, update, delete)  
 Dependend to **routeros_api.class.php** (https://github.com/BenMenking/routeros-api)  
 Simply you may just change the table name with router's menu (see ``table-list.ini`` in db folder)  
+The structure of menu is separated by strip (-). for example if you want to access **pool** which is sub from **ip** menu, you can type **ip-pool** as the table name   
 
 ## SQL Command List
 
