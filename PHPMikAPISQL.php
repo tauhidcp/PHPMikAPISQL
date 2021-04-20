@@ -29,12 +29,12 @@ class PHPMIkAPISQL{
 	private $by;
 	private $order;
 	
-	function __construct($host,$user,$pass,$port){
+	function __construct($config){
 	
-		$this->host  = $host; 
-		$this->user  = $user;
-		$this->pass  = $pass;
-		$this->port  = $port;
+		$this->host  = $config['host']; 
+		$this->user  = $config['user'];
+		$this->pass  = $config['pass'];
+		$this->port  = $config['port'];
 		$this->conn  = $this->Connection();
 		$this->table = parse_ini_file("db/table-list.ini",true)['Tables'];
 		
@@ -90,46 +90,92 @@ class PHPMIkAPISQL{
 		
 		if (array_key_exists($table,$this->table)){
 			
-			if (empty($where) && empty($order) && ($field=="*")){
+			if (empty($where) && empty($this->order)){
 				
 				$command = $this->table[$table]."/print";
-				$this->conn->write($command,true);
+				
+				if ($field=="*"){
+					
+					$this->conn->write($command,true);
+					
+				} else {
+					
+					$this->conn->write($command,false);	
+					$this->conn->write("=.proplist=".$field,true);	
+					
+				}
+				
 				$read   = $this->conn->read(false);
 				$output = $this->conn->parseResponse($read);
 				
 			}
-			
-			if (empty($where) && !empty($order) && ($field=="*")){
+
+			if (empty($where) && !empty($this->order)){
 			
 				$command = $this->table[$table]."/print";
-				$this->conn->write($command,true);
+				
+				if ($field=="*"){
+					
+					$this->conn->write($command,true);
+					
+				} else {
+					
+					$this->conn->write($command,false);	
+					$this->conn->write("=.proplist=".$field,true);	
+					
+				}
+				
 				$read   = $this->conn->read(false);
 				$output = $this->conn->parseResponse($read);
 				$output = $this->Sorting($output);
 			
 			}
 			
-			if (!empty($where) && empty($order) && ($field=="*")){
+			if (!empty($where) && empty($this->order)){
 				
 				$where = str_replace("'","",$where);
 				$command = $this->table[$table]."/print";
-				$this->conn->write($command,false);
-				$this->conn->write("?".$where,true);
+				
+				if ($field=="*"){
+					
+					$this->conn->write($command,false);
+					$this->conn->write("?".$where,true);
+					
+				} else {
+					
+					$this->conn->write($command,false);	
+					$this->conn->write("=.proplist=".$field,false);	
+					$this->conn->write("?".$where,true);
+					
+				}
+				
 				$read   = $this->conn->read(false);
 				$output = $this->conn->parseResponse($read);
 			
 			}
-			
-			if (!empty($where) && !empty($order) && ($field=="*")){
+
+			if (!empty($where) && !empty($this->order)){
 				
 				$where = str_replace("'","",$where);
 				$command = $this->table[$table]."/print";
-				$this->conn->write($command,false);
-				$this->conn->write("?".$where,true);
+				
+				if ($field=="*"){
+					
+					$this->conn->write($command,false);
+					$this->conn->write("?".$where,true);
+					
+				} else {
+					
+					$this->conn->write($command,false);	
+					$this->conn->write("=.proplist=".$field,false);	
+					$this->conn->write("?".$where,true);
+					
+				}
+				
 				$read   = $this->conn->read(false);
 				$output = $this->conn->parseResponse($read);
 				$output = $this->Sorting($output);
-			}
+			} 
 			
 			
 		} else {
@@ -146,7 +192,7 @@ class PHPMIkAPISQL{
 		
 		$table  = $this->getMenu($sql);
 		$field  = $this->getField($sql);
-		$output = "FALSE";
+		$output = array();
 		
 		if (array_key_exists($table,$this->table)){
 			
@@ -170,8 +216,17 @@ class PHPMIkAPISQL{
 				
 			} 
 			
-			$this->conn->read();
-			$output  = "TRUE";
+			$result = $this->conn->read(false);
+			
+			if ($result[0]=="!trap"){
+				
+				$output  = array("FALSE",str_replace("=message=","",$result[1]));
+				
+			} else if ($result[0]=="!done"){
+				
+				$output = array("TRUE");
+			
+			}
 		
 		} else {
 			
@@ -188,7 +243,7 @@ class PHPMIkAPISQL{
 		$table  = $this->getMenu($sql);
 		$field  = $this->getField($sql);
 		$where  = $this->getWhere($sql);
-		$output = "FALSE";
+		$output = array();
 		
 		if (array_key_exists($table,$this->table)){
 			
@@ -204,8 +259,17 @@ class PHPMIkAPISQL{
 			} 
 			
 			$this->conn->write("=".$where,true);
-			$this->conn->read();
-			$output  = "TRUE";
+			$result = $this->conn->read(false);
+			
+			if ($result[0]=="!trap"){
+				
+				$output  = array("FALSE",str_replace("=message=","",$result[1]));
+				
+			} else if ($result[0]=="!done"){
+				
+				$output = array("TRUE");
+			
+			}
 		
 		} else {
 			
@@ -220,7 +284,7 @@ class PHPMIkAPISQL{
 		
 		$table  = $this->getMenu($sql);
 		$where  = $this->getWhere($sql);
-		$output = "FALSE";
+		$output = array();
 		
 		if (array_key_exists($table,$this->table)){
 			
@@ -228,8 +292,17 @@ class PHPMIkAPISQL{
 			$command = $this->table[$table]."/remove";
 			$this->conn->write($command,false);
 			$this->conn->write("=".$where,true);
-			$this->conn->read();
-			$output = "TRUE";
+			$result = $this->conn->read(false);
+			
+			if ($result[0]=="!trap"){
+				
+				$output  = array("FALSE",str_replace("=message=","",$result[1]));
+				
+			} else if ($result[0]=="!done"){
+				
+				$output = array("TRUE");
+			
+			}
 			
 		} else {
 			
@@ -347,7 +420,7 @@ class PHPMIkAPISQL{
 		
 		if (strpos($str, 'from') !== false) {
 			
-			$from     = explode("from",$str);
+			$from    = explode("from",$str);
 			$select  = explode("select",trim(@$from[0]));
 
 			

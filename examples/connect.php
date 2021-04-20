@@ -2,11 +2,11 @@
 
 require('../PHPMikAPISQL.php');
 
-$host = "192.168.56.5";
-$user = "admin";
-$pass = "";
-$port = "8728";
+$config['host'] = "192.168.56.5";
+$config['user'] = "admin";
+$config['pass'] = "";
+$config['port'] = "8728";
 	
-$MikSQL = new PHPMikAPISQL($host,$user,$pass,$port);
+$MikSQL = new PHPMikAPISQL($config);
 
 ?>

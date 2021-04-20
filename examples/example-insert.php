@@ -15,9 +15,13 @@ $exec = $MikSQL->ExecuteSQL("insert into user (name,group) values ('".$user."','
 #$interface = "ether4"; 
 #$exec = $MikSQL->ExecuteSQL("insert into ip-address (address,network,interface) values ('".$address."','".$network."','".$interface."')");
 
-if ($exec=="TRUE"){
+if ($exec[0]=="TRUE"){
 	
 	echo "successfully added!";
+	
+} else {
+	
+	echo $exec[1]; 
 	
 }
 

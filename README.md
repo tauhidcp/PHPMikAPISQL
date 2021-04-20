@@ -8,7 +8,7 @@ The structure of menu is separated by strip (-). for example if you want to acce
 ## SQL Command List
 
 * SELECT  
-Retrieves data from the router. for example if you want to print router's interface list you can use ``"select * from interface"``. this command can be only combined with the simple search clause ``where`` or/and sorting using ``order by .id asc`` or ``order by .id desc``. 
+Retrieves data from the router. for example if you want to print router's interface list you can use ``"select * from interface"`` or print only specific item ``"select .id,name from interface"``. this command can be only combined with the simple search clause ``where`` or/and sorting using ``order by .id asc`` or ``order by .id desc``. 
 
 * INSERT  
 Add config item to the router. for example if you want to add user to the router you can use ``insert into user (name,group) values ('budi','full')``. just change the table's field using menu's property.     
