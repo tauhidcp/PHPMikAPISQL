@@ -5,12 +5,12 @@
  * PHPMikAPISQL Class v0.1
  * 
  * Simple class to execute RouterOS Command like SQL (select, insert, update, delete) 
- * Dependend with routeros_api.class.php (https://github.com/BenMenking/routeros-api)
+ * Dependend with routeros_api.class.php (https://github.com/BenMenking/routeros-api.git)
  * 
  * Author : Ahmad Tauhid (ahmad.tauhid.cp [at] gmail [dot] com)
  * 
  * http://www.tauhidslab.my.id/
- * https://github.com/tauhidcp/PHPMikAPISQL
+ * https://github.com/tauhidcp/PHPMikAPISQL.git
  * 
  *  
  ******************************/
@@ -38,7 +38,7 @@ class PHPMIkAPISQL{
 		$this->port  = $config['port'];
 		$this->conn  = $this->Connection();
 		$this->table = parse_ini_file("db/table-list.ini",true)['Tables'];
-		
+	
 	}
 	
 	public function ExecuteSQL($sql){
