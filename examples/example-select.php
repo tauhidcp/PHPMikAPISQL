@@ -22,6 +22,8 @@ $print = $MikSQL->ExecuteSQL("select * from interface");
 #$print = $MikSQL->ExecuteSQL("select * from interface where disabled='no' order by .id asc");
 #$print = $MikSQL->ExecuteSQL("select .id,name,type,mac-address from interface where disabled='no' order by .id asc");
 
+if ($print[0]!="FALSE"){
+	
 //print_r($print);
 
 // or
@@ -30,7 +32,15 @@ for($i=0; $i<count($print); $i++){
 	
 	echo $print[$i]['.id']."<br>";
 	echo $print[$i]['name']."<br>";
+	echo $print[$i]['mac-address']."<br>";
+	echo "-----------------------<br>";
 	// dst...
+	
+}
+
+} else {
+	
+	echo $print[1];
 	
 }
 

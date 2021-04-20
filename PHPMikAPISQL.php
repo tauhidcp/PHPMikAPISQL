@@ -28,6 +28,7 @@ class PHPMIkAPISQL{
 	private $result;  
 	private $by;
 	private $order;
+	private $output = array();
 	
 	function __construct($config){
 	
@@ -79,7 +80,6 @@ class PHPMIkAPISQL{
 		$field  = $this->getField($sql);
 		$where  = $this->getWhere($sql);
 		$order  = explode(" ",$this->getOrder($sql));
-		$output = array();
 		
 		if (count($order)>1){
 			
@@ -106,7 +106,7 @@ class PHPMIkAPISQL{
 				}
 				
 				$read   = $this->conn->read(false);
-				$output = $this->conn->parseResponse($read);
+				$this->output = $this->conn->parseResponse($read);
 				
 			}
 
@@ -126,8 +126,8 @@ class PHPMIkAPISQL{
 				}
 				
 				$read   = $this->conn->read(false);
-				$output = $this->conn->parseResponse($read);
-				$output = $this->Sorting($output);
+				$this->output = $this->conn->parseResponse($read);
+				$this->output = $this->Sorting($this->output);
 			
 			}
 			
@@ -150,7 +150,7 @@ class PHPMIkAPISQL{
 				}
 				
 				$read   = $this->conn->read(false);
-				$output = $this->conn->parseResponse($read);
+				$this->output = $this->conn->parseResponse($read);
 			
 			}
 
@@ -173,17 +173,17 @@ class PHPMIkAPISQL{
 				}
 				
 				$read   = $this->conn->read(false);
-				$output = $this->conn->parseResponse($read);
-				$output = $this->Sorting($output);
+				$this->output = $this->conn->parseResponse($read);
+				$this->output = $this->Sorting($this->output);
 			} 
 			
 			
 		} else {
 			
-			$output = "<b>table name not found!</b><br><i>add your table to tablelist.ini in db folder</i>";
+			$this->output = array("FALSE","<b>table '$table' not found!</b><br><i>add your table to tablelist.ini in db folder</i>");
 		}
 		
-		return $output;
+		return $this->output;
 		
 	}
 	
@@ -192,7 +192,6 @@ class PHPMIkAPISQL{
 		
 		$table  = $this->getMenu($sql);
 		$field  = $this->getField($sql);
-		$output = array();
 		
 		if (array_key_exists($table,$this->table)){
 			
@@ -220,20 +219,20 @@ class PHPMIkAPISQL{
 			
 			if ($result[0]=="!trap"){
 				
-				$output  = array("FALSE",str_replace("=message=","",$result[1]));
+				$this->output  = array("FALSE",str_replace("=message=","",$result[1]));
 				
 			} else if ($result[0]=="!done"){
 				
-				$output = array("TRUE");
+				$this->output = array("TRUE");
 			
 			}
 		
 		} else {
 			
-			$output = "<b>table name not found!</b><br><i>add your table to tablelist.ini in db folder</i>";
+			$this->output = array("FALSE","<b>table '$table' not found!</b><br><i>add your table to tablelist.ini in db folder</i>");
 		}
 		
-		return $output;
+		return $this->output;
 		
 	}
 	
@@ -243,7 +242,6 @@ class PHPMIkAPISQL{
 		$table  = $this->getMenu($sql);
 		$field  = $this->getField($sql);
 		$where  = $this->getWhere($sql);
-		$output = array();
 		
 		if (array_key_exists($table,$this->table)){
 			
@@ -263,20 +261,20 @@ class PHPMIkAPISQL{
 			
 			if ($result[0]=="!trap"){
 				
-				$output  = array("FALSE",str_replace("=message=","",$result[1]));
+				$this->output  = array("FALSE",str_replace("=message=","",$result[1]));
 				
 			} else if ($result[0]=="!done"){
 				
-				$output = array("TRUE");
+				$this->output = array("TRUE");
 			
 			}
 		
 		} else {
 			
-			$output = "<b>table name not found!</b><br><i>add your table to tablelist.ini in db folder</i>";
+			$this->output = array("FALSE","<b>table '$table' not found!</b><br><i>add your table to tablelist.ini in db folder</i>");
 		}
 		
-		return $output;
+		return $this->output;
 	}
 	
 	/* Delete Function */
@@ -284,7 +282,6 @@ class PHPMIkAPISQL{
 		
 		$table  = $this->getMenu($sql);
 		$where  = $this->getWhere($sql);
-		$output = array();
 		
 		if (array_key_exists($table,$this->table)){
 			
@@ -296,20 +293,20 @@ class PHPMIkAPISQL{
 			
 			if ($result[0]=="!trap"){
 				
-				$output  = array("FALSE",str_replace("=message=","",$result[1]));
+				$this->output  = array("FALSE",str_replace("=message=","",$result[1]));
 				
 			} else if ($result[0]=="!done"){
 				
-				$output = array("TRUE");
+				$this->output = array("TRUE");
 			
 			}
 			
 		} else {
 			
-			$output = "<b>table name not found!</b><br><i>add your table to tablelist.ini in db folder</i>";
+			$this->output = array("FALSE","<b>table '$table' not found!</b><br><i>add your table to tablelist.ini in db folder</i>");
 		}
 		
-		return $output;
+		return $this->output;
 	}
 	
 	private function getCMD($str){
