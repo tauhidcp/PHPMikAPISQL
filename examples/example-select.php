@@ -5,10 +5,10 @@
 require('connect.php');
 
 # Select all
-$print = $MikSQL->ExecuteSQL("select * from interface");
+#$print = $MikSQL->ExecuteSQL("select * from interface");
 
 # Select Specific Item
-#$print = $MikSQL->ExecuteSQL("select .id,name,type,mac-address from interface");
+$print = $MikSQL->ExecuteSQL("select .id,name,type,mac-address from interface");
 
 # Order desc 
 #$print = $MikSQL->ExecuteSQL("select * from interface order by .id desc");

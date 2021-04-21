@@ -90,6 +90,8 @@ class PHPMIkAPISQL{
 		
 		if (array_key_exists($table,$this->table)){
 			
+			$field = str_replace(" ","",$field);
+			
 			if (empty($where) && empty($this->order)){
 				
 				$command = $this->table[$table]."/print";
