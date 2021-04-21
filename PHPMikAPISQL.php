@@ -49,7 +49,7 @@ class PHPMIkAPISQL{
 		if ($cmd=="select"){
 			
 			$result = $this->SelectCMD($sql);
-			
+		
 		}
 		
 		if ($cmd=="insert"){
@@ -80,6 +80,7 @@ class PHPMIkAPISQL{
 		$field  = $this->getField($sql);
 		$where  = $this->getWhere($sql);
 		$order  = explode(" ",$this->getOrder($sql));
+		$limit  = $this->getLimit($sql);
 		
 		if (count($order)>1){
 			
@@ -179,6 +180,12 @@ class PHPMIkAPISQL{
 				$this->output = $this->Sorting($this->output);
 			} 
 			
+			
+			if (!empty($limit)){
+					
+				$this->output = array_slice($this->output,0,$limit);
+					
+			}
 			
 		} else {
 			
@@ -329,20 +336,44 @@ class PHPMIkAPISQL{
 			$from  = explode("from",$str);
 			$where = explode("where",trim(@$from[1]));
 			$order = explode("order",trim(@$from[1]));
+			$limit = explode("limit",trim(@$from[1]));
 			
+			// Limit Only
+			if ((count($order)==1) && (count($where)==1) && (count($limit)>1)){
+				
+				$menu = @$limit[0];
 			
-			if ((count($order)>1) && (count($where)==1)){
+			// Order Only
+			} else if ((count($order)>1) && (count($where)==1) && (count($limit)==1)){
 				
 				$menu = @$order[0];
 			
-			} else if ((count($where)>1) && (count($order)==1)){
+			// Where Only
+			} else if ((count($where)>1) && (count($order)==1) && (count($limit)==1)){
 				
 				$menu = @$where[0];
 			
-			} else if ((count($where)>1) && (count($order)>1)){
+			// Where Limit
+			} else if ((count($order)==1) && (count($where)>1) && (count($limit)>1)){
 				
 				$menu = @$where[0];
 			
+			// Order Limit
+			} else if ((count($order)>1) && (count($where)==1) && (count($limit)>1)){
+				
+				$menu = @$order[0];
+			
+			// Where Order  
+			} else if ((count($order)>1) && (count($where)>1) && (count($limit)==1)){
+				
+				$menu = @$where[0];
+			
+			// Where Order Limit
+			} else if ((count($where)>1) && (count($order)>1) && (count($limit)>1)){
+				
+				$menu = @$where[0];
+			
+			// Select Only
 			} else {
 				
 				$menu = @$from[1];
@@ -380,17 +411,26 @@ class PHPMIkAPISQL{
 		
 		$where   = explode("where",strtolower(trim($str)));
 		$order   = explode("order",trim(@$where[1]));
+		$limit   = explode("limit",trim(@$where[1]));
 		$wherex  = "";
 		
-		if ((count($order)>1) && (count($where)>1)){
+		if ((count($order)>1) && (count($where)>1) && (count($limit)>1)){
 			
 			$wherex = @$order[0];
 		
-		} else if ((count($where)>1) && (count($order)==1)){
+		} else if ((count($where)>1) && (count($order)==1) && (count($limit)==1)){
 			
 			$wherex = @$where[1];
 		
-		} 
+		} else if ((count($where)>1) && (count($order)==1) && (count($limit)>1)){
+			
+			$wherex = @$limit[0];
+		
+		} else if ((count($where)>1) && (count($order)>1) && (count($limit)==1)){
+			
+			$wherex = @$order[0];
+		
+		}
 		
 		return trim($wherex);
 		
@@ -400,9 +440,14 @@ class PHPMIkAPISQL{
 	private function getOrder($str){
 		
 		$order   = explode("order by",strtolower(trim($str)));
+		$limit   = explode("limit",trim(@$order[1]));
 		$orderx  = "";
 		
-		if (count($order)>1){
+		if ((count($order)>1) && (count($limit)>1)){
+			
+			$orderx = @$limit[0];
+		
+		}  else if ((count($order)>1) && (count($limit)==1)){
 			
 			$orderx = @$order[1];
 		
@@ -412,11 +457,27 @@ class PHPMIkAPISQL{
 		
 	}
 	
+	private function getLimit($str){
+		
+		$limit   = explode("limit",strtolower(trim($str)));
+		$limitx  = "";
+		
+		if (count($limit)>1){
+			
+			$limitx = @$limit[1];
+		
+		} 
+		
+		return trim($limitx);
+		
+	}
+	
 	private function getField($str){
 		
 		$str = strtolower(trim($str));
 		$fieldx  = "";		
 		
+		// Select
 		if (strpos($str, 'from') !== false) {
 			
 			$from    = explode("from",$str);
@@ -429,12 +490,14 @@ class PHPMIkAPISQL{
 			
 			} 
 		
+		// Insert
 		} else if (strpos($str, 'into') !== false) {
 			
 			$table   = $this->getMenu($str);
 			$field   = explode($table,$str);
 			$fieldx  = str_replace(")","",str_replace("(","",@$field[1]));
 		
+		// Update
 		} else if (strpos($str, 'set') !== false) {
 			
 			$set    = explode("set",$str);
@@ -457,7 +520,7 @@ class PHPMIkAPISQL{
 		if ($this->order=="ASC"){ 
 		
 			array_multisort(array_map(function($element) {
-				return $element[$this->by];
+				return @$element[$this->by];
 			}, $array), SORT_ASC, $array);
 		
 		} 
@@ -465,7 +528,7 @@ class PHPMIkAPISQL{
 		if ($this->order=="DESC"){ 
 		
 			array_multisort(array_map(function($element) {
-				return $element[$this->by];
+				return @$element[$this->by];
 			}, $array), SORT_DESC, $array);
 		
 		}
