@@ -5,7 +5,7 @@
 require('connect.php');
 
 # Select all
-$print = $MikSQL->ExecuteSQL("select * from interface");
+$print = $MikSQL->ExecuteSQL("select * from user");
 #$print = $MikSQL->ExecuteSQL("select * from interface order by .id desc");
 #$print = $MikSQL->ExecuteSQL("select * from interface order by .id asc limit 1");
 
@@ -29,15 +29,14 @@ $print = $MikSQL->ExecuteSQL("select * from interface");
 #$print = $MikSQL->ExecuteSQL("select .id,name,type,mac-address from interface where disabled='no' order by .id asc limit 3");
 #$print = $MikSQL->ExecuteSQL("select .id,name,type,mac-address from interface where disabled='no' order by .id desc limit 2");
 
-//print_r($print);
-
 if ($print[0]!="FALSE"){
 	
-//print_r($print);
+print_r($print);
 
 // or
+// print interface
 
-for($i=0; $i<count($print); $i++){
+/*for($i=0; $i<count($print); $i++){
 	
 	echo $print[$i]['.id']."<br>";
 	echo $print[$i]['name']."<br>";
@@ -45,7 +44,7 @@ for($i=0; $i<count($print); $i++){
 	echo "-----------------------<br>";
 	// dst...
 	
-}
+}*/
 
 } else {
 	

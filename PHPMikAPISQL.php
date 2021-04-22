@@ -5,14 +5,14 @@
  * PHPMikAPISQL Class v0.1
  * 
  * Simple class to execute RouterOS Command like SQL (select, insert, update, delete) 
- * Dependend with routeros_api.class.php (https://github.com/BenMenking/routeros-api.git)
+ * Dependend to routeros_api.class.php (https://github.com/BenMenking/routeros-api.git)
  * 
  * Author : Ahmad Tauhid (ahmad.tauhid.cp [at] gmail [dot] com)
  * 
  * http://www.tauhidslab.my.id/
  * https://github.com/tauhidcp/PHPMikAPISQL.git
  * 
- *  
+ * 
  ******************************/
 
 require_once("routeros_api.class.php");
@@ -92,10 +92,9 @@ class PHPMIkAPISQL{
 		if (array_key_exists($table,$this->table)){
 			
 			$field = str_replace(" ","",$field);
+			$command = trim($this->table[$table])."/print";
 			
-			if (empty($where) && empty($this->order)){
-				
-				$command = $this->table[$table]."/print";
+			if (empty($where) && empty($this->order)){				
 				
 				if ($field=="*"){
 					
@@ -114,8 +113,6 @@ class PHPMIkAPISQL{
 			}
 
 			if (empty($where) && !empty($this->order)){
-			
-				$command = $this->table[$table]."/print";
 				
 				if ($field=="*"){
 					
@@ -137,7 +134,6 @@ class PHPMIkAPISQL{
 			if (!empty($where) && empty($this->order)){
 				
 				$where = str_replace("'","",$where);
-				$command = $this->table[$table]."/print";
 				
 				if ($field=="*"){
 					
@@ -160,7 +156,6 @@ class PHPMIkAPISQL{
 			if (!empty($where) && !empty($this->order)){
 				
 				$where = str_replace("'","",$where);
-				$command = $this->table[$table]."/print";
 				
 				if ($field=="*"){
 					
@@ -208,7 +203,7 @@ class PHPMIkAPISQL{
 			$key     = explode(",",trim($values[0]));
 			$val     = explode(",",trim($values[1]));
 			
-			$command = $this->table[$table]."/add";
+			$command = trim($this->table[$table])."/add";
 			$this->conn->write($command,false);
 			
 			for ($i=0; $i<count($key); $i++){
@@ -256,7 +251,7 @@ class PHPMIkAPISQL{
 			
 			$fieldx  = explode(",",$field);
 			$where   = str_replace("'","",$where);
-			$command = $this->table[$table]."/set";
+			$command = trim($this->table[$table])."/set";
 			$this->conn->write($command,false);
 			
 			for ($i=0; $i<count($fieldx); $i++){
@@ -295,7 +290,7 @@ class PHPMIkAPISQL{
 		if (array_key_exists($table,$this->table)){
 			
 			$where = str_replace("'","",$where);
-			$command = $this->table[$table]."/remove";
+			$command = trim($this->table[$table])."/remove";
 			$this->conn->write($command,false);
 			$this->conn->write("=".$where,true);
 			$result = $this->conn->read(false);
