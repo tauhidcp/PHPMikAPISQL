@@ -89,11 +89,13 @@ class PHPMIkAPISQL{
 			
 		}
 		
+		// Check Table Name If exist 
 		if (array_key_exists($table,$this->table)){
 			
 			$field = str_replace(" ","",$field);
 			$command = trim($this->table[$table])."/print";
 			
+			// Query Without Where & Order
 			if (empty($where) && empty($this->order)){				
 				
 				if ($field=="*"){
@@ -107,11 +109,12 @@ class PHPMIkAPISQL{
 					
 				}
 				
-				$read   = $this->conn->read(false);
-				$this->output = $this->conn->parseResponse($read);
+				$result = $this->conn->read(false);
+				$this->output = $this->conn->parseResponse($result);
 				
 			}
-
+			
+			// Query With Order Without Where
 			if (empty($where) && !empty($this->order)){
 				
 				if ($field=="*"){
@@ -125,66 +128,118 @@ class PHPMIkAPISQL{
 					
 				}
 				
-				$read   = $this->conn->read(false);
-				$this->output = $this->conn->parseResponse($read);
+				$result = $this->conn->read(false);
+				$this->output = $this->conn->parseResponse($result);
 				$this->output = $this->Sorting($this->output);
-			
+		
 			}
 			
+			// Query With Where Without Order
 			if (!empty($where) && empty($this->order)){
 				
-				$where = str_replace("'","",$where);
+				$where = explode("and",str_replace(")","",str_replace("(","",str_replace("'","",$where))));
 				
 				if ($field=="*"){
 					
 					$this->conn->write($command,false);
-					$this->conn->write("?".$where,true);
+							
+					for ($i=0; $i<count($where); $i++){
+				
+						if ($i == (count($where)-1)){
+								
+							$this->conn->write("?".trim($where[$i]),true);
+							
+						} else {
+								
+							$this->conn->write("?".trim($where[$i]),false);
+						}
+							
+					} 					
 					
 				} else {
 					
 					$this->conn->write($command,false);	
 					$this->conn->write("=.proplist=".$field,false);	
-					$this->conn->write("?".$where,true);
+					
+					for ($i=0; $i<count($where); $i++){
+				
+							if ($i == (count($where)-1)){
+								
+								$this->conn->write("?".trim($where[$i]),true);
+							
+							} else {
+								
+								$this->conn->write("?".trim($where[$i]),false);
+							}
+							
+					} 		
 					
 				}
 				
-				$read   = $this->conn->read(false);
-				$this->output = $this->conn->parseResponse($read);
+				$result = $this->conn->read(false);
+				$this->output = $this->conn->parseResponse($result);
 			
 			}
-
+			
+			// Query With Where & Order
 			if (!empty($where) && !empty($this->order)){
 				
-				$where = str_replace("'","",$where);
+				$where = explode("and",str_replace(")","",str_replace("(","",str_replace("'","",$where))));
 				
 				if ($field=="*"){
 					
 					$this->conn->write($command,false);
-					$this->conn->write("?".$where,true);
+					
+					for ($i=0; $i<count($where); $i++){
+				
+						if ($i == (count($where)-1)){
+								
+							$this->conn->write("?".trim($where[$i]),true);
+							
+						} else {
+								
+							$this->conn->write("?".trim($where[$i]),false);
+						}
+							
+					}
 					
 				} else {
 					
 					$this->conn->write($command,false);	
 					$this->conn->write("=.proplist=".$field,false);	
-					$this->conn->write("?".$where,true);
+					
+					for ($i=0; $i<count($where); $i++){
+				
+						if ($i == (count($where)-1)){
+								
+							$this->conn->write("?".trim($where[$i]),true);
+							
+						} else {
+								
+							$this->conn->write("?".trim($where[$i]),false);
+						}
+							
+					}
 					
 				}
 				
-				$read   = $this->conn->read(false);
-				$this->output = $this->conn->parseResponse($read);
-				$this->output = $this->Sorting($this->output);
-			} 
-			
+				$result = $this->conn->read(false);
+				$this->output = $this->conn->parseResponse($result);
+				$this->output = $this->Sorting($this->output);				
+			} 		
+
 			
 			if (!empty($limit)){
-					
+						
 				$this->output = array_slice($this->output,0,$limit);
-					
+						
 			}
+							
+			$this->output = array("status" => "TRUE", "data" => $this->output);				
 			
 		} else {
 			
-			$this->output = array("FALSE","<b>table '$table' not found!</b><br><i>add your table to tablelist.ini in db folder</i>");
+			$this->output = array("status" => "FALSE", "message" => "<b>table '$table' not found!</b><br><i>add your table to tablelist.ini in db folder</i>");
 		}
 		
 		return $this->output;
@@ -223,17 +278,17 @@ class PHPMIkAPISQL{
 			
 			if ($result[0]=="!trap"){
 				
-				$this->output  = array("FALSE",str_replace("=message=","",$result[1]));
+				$this->output 	 = array("status" => "FALSE", "message" => str_replace("=message=","",$result[1]));
 				
 			} else if ($result[0]=="!done"){
 				
-				$this->output = array("TRUE");
+				$this->output 	 = array("status" => "TRUE", "message" => "successfully added!");
 			
 			}
 		
 		} else {
 			
-			$this->output = array("FALSE","<b>table '$table' not found!</b><br><i>add your table to tablelist.ini in db folder</i>");
+			$this->output = array("status" => "FALSE", "message" => "<b>table '$table' not found!</b><br><i>add your table to tablelist.ini in db folder</i>");
 		}
 		
 		return $this->output;
@@ -265,17 +320,17 @@ class PHPMIkAPISQL{
 			
 			if ($result[0]=="!trap"){
 				
-				$this->output  = array("FALSE",str_replace("=message=","",$result[1]));
+				$this->output 	 = array("status" => "FALSE", "message" => str_replace("=message=","",$result[1]));
 				
 			} else if ($result[0]=="!done"){
 				
-				$this->output = array("TRUE");
+				$this->output 	 = array("status" => "TRUE", "message" => "successfully updated!");
 			
 			}
 		
 		} else {
 			
-			$this->output = array("FALSE","<b>table '$table' not found!</b><br><i>add your table to tablelist.ini in db folder</i>");
+			$this->output = array("status" => "FALSE", "message" => "<b>table '$table' not found!</b><br><i>add your table to tablelist.ini in db folder</i>");
 		}
 		
 		return $this->output;
@@ -297,17 +352,17 @@ class PHPMIkAPISQL{
 			
 			if ($result[0]=="!trap"){
 				
-				$this->output  = array("FALSE",str_replace("=message=","",$result[1]));
+				$this->output 	 = array("status" => "FALSE", "message" => str_replace("=message=","",$result[1]));
 				
 			} else if ($result[0]=="!done"){
 				
-				$this->output = array("TRUE");
+				$this->output 	 = array("status" => "TRUE", "message" => "successfully deleted!");
 			
 			}
 			
 		} else {
 			
-			$this->output = array("FALSE","<b>table '$table' not found!</b><br><i>add your table to tablelist.ini in db folder</i>");
+			$this->output = array("status" => "FALSE", "message" => "<b>table '$table' not found!</b><br><i>add your table to tablelist.ini in db folder</i>");
 		}
 		
 		return $this->output;
@@ -535,6 +590,7 @@ class PHPMIkAPISQL{
 		
 		$api 		= new RouterosAPI();
 		$api->port 	= $this->port;
+		$api->debug = false;
 
 		if ($api->connect($this->host, $this->user, $this->pass)){
 		

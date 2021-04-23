@@ -6,7 +6,7 @@ require('connect.php');
 
 # Update User
 $group = "read"; # full/read/write
-$id    = "*6";
+$id    = "*4";
 $exec  = $MikSQL->ExecuteSQL("update user set group='".$group."' where .id='".$id."'");
 
 # Update IP Address
@@ -16,13 +16,13 @@ $exec  = $MikSQL->ExecuteSQL("update user set group='".$group."' where .id='".$i
 #$id        = "*4";
 #$exec = $MikSQL->ExecuteSQL("update ip-address set address='".$address."',network='".$network."',interface='".$interface."' where .id='".$id."'");
 
-if ($exec[0]=="TRUE"){
+if ($exec['status']=="TRUE"){
 	
-	echo "successfully updated!";
+	echo $exec['message'];
 	
 } else {
 	
-	echo $exec[1]; 
+	echo $exec['message']; 
 	
 }
 

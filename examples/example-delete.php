@@ -5,19 +5,19 @@
 require('connect.php');
 
 # Delete User
-$id   = "*6";
+$id   = "*4";
 $exec = $MikSQL->ExecuteSQL("delete from user where .id='".$id."'");
 
 #Delete IP Address
 #$exec = $MikSQL->ExecuteSQL("delete from ip-address where .id='".$id."'");
 
-if ($exec[0]=="TRUE"){
+if ($exec['status']=="TRUE"){
 	
-	echo "successfully deleted!";
+	echo $exec['message'];
 	
 } else {
 	
-	echo $exec[1]; 
+	echo $exec['message']; 
 	
 }
 
