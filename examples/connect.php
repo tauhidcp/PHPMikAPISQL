@@ -2,7 +2,7 @@
 
 require('../PHPMikAPISQL.php');
 
-$config['host'] = "192.168.56.5";
+$config['host'] = "192.168.56.101";
 $config['user'] = "admin";
 $config['pass'] = "";
 $config['port'] = "8728";

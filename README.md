@@ -1,14 +1,14 @@
 # PHPMikAPISQL Class v0.1
  
-Simple class to execute RouterOS Command like SQL (select, insert, update, delete)  
-Dependend to **routeros_api.class.php** (https://github.com/BenMenking/routeros-api)  
-Simply you may just change the table name with router's menu (see ``table-list.ini`` in db folder)  
-The structure of menu is separated by strip (-). for example if you want to access **pool** which is sub from **ip** menu, you can type **ip-pool** as the table name   
+simple class to execute RouterOS Command like SQL (select, insert, update, delete)  
+dependend to **routeros_api.class.php** (https://github.com/BenMenking/routeros-api)  
+simply you may just change the table name with router's menu (see ``table-list.ini`` in db folder)  
+the structure of menu is separated by (-). for example if you want to access **pool** which is sub from **ip** menu, you can type **ip-pool** as the table name   
 
 ## SQL Command List
 
 * SELECT  
-Retrieves data from the router. for example if you want to print router's interface list you can use ``"select * from interface"`` or print only specific item ``"select .id,name from interface"``. this command can be combined with the search clause ``where`` or/and sorting using ``order by .id asc`` or ``order by .id desc``. use limit keyword at the last to limit output ``select * from interface limit 2``
+Retrieves data from the router. for example if you want to print router's interface list you can use ``"select * from interface"`` or print only specific item ``"select .id,name from interface"``. this command can be combined with the search clause ``where`` or/and sorting using ``order by .id asc`` or ``order by .id desc``. use limit keyword at the last to limit output ``select * from interface limit 2``. also, you can search with pattern using like keyword ``select * from interface where name like '%isp%'``
 
 * INSERT  
 Add config item to the router. for example if you want to add user to the router you can use ``insert into user (name,group) values ('budi','full')``. just change the table's field with menu's attribut.     

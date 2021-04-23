@@ -81,6 +81,8 @@ class PHPMIkAPISQL{
 		$where  = $this->getWhere($sql);
 		$order  = explode(" ",$this->getOrder($sql));
 		$limit  = $this->getLimit($sql);
+		$like 	= array();
+		$wherex = array();
 		
 		if (count($order)>1){
 			
@@ -144,34 +146,66 @@ class PHPMIkAPISQL{
 					$this->conn->write($command,false);
 							
 					for ($i=0; $i<count($where); $i++){
-				
-						if ($i == (count($where)-1)){
-								
-							$this->conn->write("?".trim($where[$i]),true);
+						
+						$likex   = explode("like",trim($where[$i]));
+						
+						if (count($likex)>1){
 							
+							$like[]  = str_replace("%","",trim($likex[1]));
+						
 						} else {
-								
-							$this->conn->write("?".trim($where[$i]),false);
+							
+							$wherex[]  = str_replace("%","",trim($where[$i]));
+						
 						}
 							
-					} 					
-					
+					} 
+
+					for ($i=0; $i<count($wherex); $i++){
+						
+							if ($i == (count($wherex)-1)){
+								
+								$this->conn->write("?".trim($wherex[$i]),true);
+									
+							} else {
+										
+								$this->conn->write("?".trim($wherex[$i]),false);
+							} 
+						
+					}
+		
 				} else {
 					
 					$this->conn->write($command,false);	
 					$this->conn->write("=.proplist=".$field,false);	
 					
 					for ($i=0; $i<count($where); $i++){
-				
-							if ($i == (count($where)-1)){
-								
-								$this->conn->write("?".trim($where[$i]),true);
+						
+						$likex   = explode("like",trim($where[$i]));
+						
+						if (count($likex)>1){
 							
+							$like[]  = str_replace("%","",trim($likex[1]));
+						
+						} else {
+							
+							$wherex[]  = str_replace("%","",trim($where[$i]));
+						
+						}
+							
+					} 
+
+					for ($i=0; $i<count($wherex); $i++){
+						
+							if ($i == (count($wherex)-1)){
+								
+								$this->conn->write("?".trim($wherex[$i]),true);
+									
 							} else {
-								
-								$this->conn->write("?".trim($where[$i]),false);
-							}
-							
+										
+								$this->conn->write("?".trim($wherex[$i]),false);
+							} 
+						
 					} 		
 					
 				}
@@ -191,16 +225,32 @@ class PHPMIkAPISQL{
 					$this->conn->write($command,false);
 					
 					for ($i=0; $i<count($where); $i++){
-				
-						if ($i == (count($where)-1)){
-								
-							$this->conn->write("?".trim($where[$i]),true);
+						
+						$likex   = explode("like",trim($where[$i]));
+						
+						if (count($likex)>1){
 							
+							$like[]  = str_replace("%","",trim($likex[1]));
+						
 						} else {
-								
-							$this->conn->write("?".trim($where[$i]),false);
+							
+							$wherex[]  = str_replace("%","",trim($where[$i]));
+						
 						}
 							
+					} 
+
+					for ($i=0; $i<count($wherex); $i++){
+						
+							if ($i == (count($wherex)-1)){
+								
+								$this->conn->write("?".trim($wherex[$i]),true);
+									
+							} else {
+										
+								$this->conn->write("?".trim($wherex[$i]),false);
+							} 
+						
 					}
 					
 				} else {
@@ -209,16 +259,32 @@ class PHPMIkAPISQL{
 					$this->conn->write("=.proplist=".$field,false);	
 					
 					for ($i=0; $i<count($where); $i++){
-				
-						if ($i == (count($where)-1)){
-								
-							$this->conn->write("?".trim($where[$i]),true);
+						
+						$likex   = explode("like",trim($where[$i]));
+						
+						if (count($likex)>1){
 							
+							$like[]  = str_replace("%","",trim($likex[1]));
+						
 						} else {
-								
-							$this->conn->write("?".trim($where[$i]),false);
+							
+							$wherex[]  = str_replace("%","",trim($where[$i]));
+						
 						}
 							
+					} 
+
+					for ($i=0; $i<count($wherex); $i++){
+						
+							if ($i == (count($wherex)-1)){
+								
+								$this->conn->write("?".trim($wherex[$i]),true);
+									
+							} else {
+										
+								$this->conn->write("?".trim($wherex[$i]),false);
+							} 
+						
 					}
 					
 				}
@@ -227,15 +293,24 @@ class PHPMIkAPISQL{
 				$this->output = $this->conn->parseResponse($result);
 				$this->output = $this->Sorting($this->output);				
 			} 		
+				
+			if (count($like)>=1){
+				
+				for ($i=0; $i<count($like); $i++){
+					
+					$this->output = $this->SearchLike($this->output,$like[$i]);
+				
+				}
+		
+			}
 
-			
 			if (!empty($limit)){
 						
 				$this->output = array_slice($this->output,0,$limit);
 						
 			}
-							
-			$this->output = array("status" => "TRUE", "data" => $this->output);				
+			
+			$this->output = array("status" => "TRUE", "data" => $this->output);					
 			
 		} else {
 			
@@ -585,6 +660,17 @@ class PHPMIkAPISQL{
 		
 		return $array;
 	} 
+	
+	private function SearchLike($data,$key){
+		
+		$pattern = "/$key/";
+		$output  = array_filter($data, function($a) use($pattern)  {
+			return preg_grep($pattern, $a);
+		});
+
+		return $output;
+	
+	}
 	
 	private function Connection(){
 		
