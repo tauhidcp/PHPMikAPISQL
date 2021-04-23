@@ -5,7 +5,7 @@
 require('connect.php');
 
 # Select all
-$print = $MikSQL->ExecuteSQL("select * from interface where name like '%isp%' and type='ether' order by .id desc limit 2");
+$print = $MikSQL->ExecuteSQL("select * from interface where name like 'isp' and type='ether' order by .id asc limit 3");
 #$print = $MikSQL->ExecuteSQL("select .id,name,type,mac-address from interface where name like '%isp%' and type='ether' order by .id desc limit 2");
 #$print = $MikSQL->ExecuteSQL("select * from interface order by .id desc");
 #$print = $MikSQL->ExecuteSQL("select * from interface order by .id asc limit 1");

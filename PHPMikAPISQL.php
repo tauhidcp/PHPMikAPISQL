@@ -28,6 +28,7 @@ class PHPMIkAPISQL{
 	private $result;  
 	private $by;
 	private $order;
+	private $column;
 	private $output = array();
 	
 	function __construct($config){
@@ -83,6 +84,7 @@ class PHPMIkAPISQL{
 		$limit  = $this->getLimit($sql);
 		$like 	= array();
 		$wherex = array();
+		$col    = array();
 		
 		if (count($order)>1){
 			
@@ -152,10 +154,11 @@ class PHPMIkAPISQL{
 						if (count($likex)>1){
 							
 							$like[]  = str_replace("%","",trim($likex[1]));
+							$col[]   = trim($likex[0]);
 						
 						} else {
 							
-							$wherex[]  = str_replace("%","",trim($where[$i]));
+							$wherex[]  = trim($where[$i]);
 						
 						}
 							
@@ -186,10 +189,11 @@ class PHPMIkAPISQL{
 						if (count($likex)>1){
 							
 							$like[]  = str_replace("%","",trim($likex[1]));
+							$col[]   = trim($likex[0]);
 						
 						} else {
 							
-							$wherex[]  = str_replace("%","",trim($where[$i]));
+							$wherex[]  = trim($where[$i]);
 						
 						}
 							
@@ -231,10 +235,11 @@ class PHPMIkAPISQL{
 						if (count($likex)>1){
 							
 							$like[]  = str_replace("%","",trim($likex[1]));
+							$col[]   = trim($likex[0]);
 						
 						} else {
 							
-							$wherex[]  = str_replace("%","",trim($where[$i]));
+							$wherex[]  = trim($where[$i]);
 						
 						}
 							
@@ -265,10 +270,11 @@ class PHPMIkAPISQL{
 						if (count($likex)>1){
 							
 							$like[]  = str_replace("%","",trim($likex[1]));
+							$col[]   = trim($likex[0]);
 						
 						} else {
 							
-							$wherex[]  = str_replace("%","",trim($where[$i]));
+							$wherex[]  = trim($where[$i]);
 						
 						}
 							
@@ -298,7 +304,7 @@ class PHPMIkAPISQL{
 				
 				for ($i=0; $i<count($like); $i++){
 					
-					$this->output = $this->SearchLike($this->output,$like[$i]);
+					$this->output = $this->SearchLike($this->output,$like[$i],$col[$i]);
 				
 				}
 		
@@ -661,11 +667,13 @@ class PHPMIkAPISQL{
 		return $array;
 	} 
 	
-	private function SearchLike($data,$key){
+	private function SearchLike($data,$key,$val){
 		
-		$pattern = "/$key/";
-		$output  = array_filter($data, function($a) use($pattern)  {
-			return preg_grep($pattern, $a);
+		$this->column  = $val;
+		$pattern 	   = "/$key/";
+
+		$output = array_filter($data, function($a) use($pattern)  {
+			return preg_match_all($pattern, $a[$this->column]);
 		});
 
 		return $output;
