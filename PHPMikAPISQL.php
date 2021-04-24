@@ -77,15 +77,15 @@ class PHPMIkAPISQL{
 	/* Select Function */
 	private function SelectCMD($sql){		
 		
-		$table  = $this->getMenu($sql);
-		$field  = $this->getField($sql);
-		$where  = $this->getWhere($sql);
-		$order  = explode(" ",$this->getOrder($sql));
-		$limit  = $this->getLimit($sql);
-		$like 	= array();
-		$wherex = array();
-		$col    = array();
-		$colw   = array();
+		$table   = $this->getMenu($sql);
+		$field   = $this->getField($sql);
+		$where   = $this->getWhere($sql);
+		$order   = explode(" ",$this->getOrder($sql));
+		$limit   = $this->getLimit($sql);
+		$like 	 = array();
+		$wherexx = array();
+		$col     = array();
+		$colw    = array();
 		
 		if (count($order)>1){
 			
@@ -161,7 +161,7 @@ class PHPMIkAPISQL{
 						
 						if (count($wheree)>1){
 							
-							$wherex[]  = trim($wheree[1]);
+							$wherexx[]  = trim($wheree[1]);
 							$colw[]   = trim($wheree[0]);
 						}
 							
@@ -187,7 +187,7 @@ class PHPMIkAPISQL{
 						
 						if (count($wheree)>1){
 							
-							$wherex[]  = trim($wheree[1]);
+							$wherexx[]  = trim($wheree[1]);
 							$colw[]   = trim($wheree[0]);
 						}
 							
@@ -225,7 +225,7 @@ class PHPMIkAPISQL{
 						
 						if (count($wheree)>1){
 							
-							$wherex[]  = trim($wheree[1]);
+							$wherexx[]  = trim($wheree[1]);
 							$colw[]   = trim($wheree[0]);
 						}
 							
@@ -250,7 +250,7 @@ class PHPMIkAPISQL{
 						
 						if (count($wheree)>1){
 							
-							$wherex[]  = trim($wheree[1]);
+							$wherexx[]  = trim($wheree[1]);
 							$colw[]   = trim($wheree[0]);
 						}
 							
@@ -278,11 +278,11 @@ class PHPMIkAPISQL{
 			}
 			
 			// Search Equal
-			if (count($wherex)>=1){
+			if (count($wherexx)>=1){
 				
-				for ($i=0; $i<count($wherex); $i++){
+				for ($i=0; $i<count($wherexx); $i++){
 					
-					$this->output = $this->SearchEqual($this->output,$wherex[$i],$colw[$i]);
+					$this->output = $this->SearchEqual($this->output,$wherexx[$i],$colw[$i]);
 				
 				}
 		
@@ -668,7 +668,7 @@ class PHPMIkAPISQL{
 			return (strtolower($value[$this->column])==$pattern);
 		});
 
-		return $data;
+		return $output;
 	
 	}
 	

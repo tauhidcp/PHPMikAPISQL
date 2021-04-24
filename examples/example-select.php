@@ -5,11 +5,12 @@
 require('connect.php');
 
 # Select all
-$print = $MikSQL->ExecuteSQL("select * from log where message like 'via api' order by .id asc limit 5");
+$print = $MikSQL->ExecuteSQL("select * from log where message like 'via api' order by .id desc limit 5");
+#$print = $MikSQL->ExecuteSQL("select * from log where message like 'via api' and time='11:54:21' order by .id asc limit 5");
 #$print = $MikSQL->ExecuteSQL("select .id,time,message from log where message like 'via api' order by .id asc limit 5");
-#$print = $MikSQL->ExecuteSQL("select .id,name,type,mac-address from interface where name='eth-ISP'");
+#$print = $MikSQL->ExecuteSQL("select .id,name,type,mac-address from interface where name like 'local'");
 #$print = $MikSQL->ExecuteSQL("select .id,name,type,mac-address from interface where name like 'isp' and type='ether' order by .id desc limit 2");
-#$print = $MikSQL->ExecuteSQL("select * from interface where name='eth-Local'");
+#$print = $MikSQL->ExecuteSQL("select * from interface where name='ether3'");
 
 if ($print['status']!="FALSE"){
 	
