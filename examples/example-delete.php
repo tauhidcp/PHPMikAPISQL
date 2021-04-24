@@ -5,7 +5,7 @@
 require('connect.php');
 
 # Delete User
-$id   = "*4";
+$id   = "*2";
 $exec = $MikSQL->ExecuteSQL("delete from user where .id='".$id."'");
 
 #Delete IP Address

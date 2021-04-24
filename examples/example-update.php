@@ -6,7 +6,7 @@ require('connect.php');
 
 # Update User
 $group = "read"; # full/read/write
-$id    = "*4";
+$id    = "*2";
 $exec  = $MikSQL->ExecuteSQL("update user set group='".$group."' where .id='".$id."'");
 
 # Update IP Address

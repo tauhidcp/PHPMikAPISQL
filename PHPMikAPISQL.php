@@ -85,6 +85,7 @@ class PHPMIkAPISQL{
 		$like 	= array();
 		$wherex = array();
 		$col    = array();
+		$colw   = array();
 		
 		if (count($order)>1){
 			
@@ -144,73 +145,56 @@ class PHPMIkAPISQL{
 				$where = explode("and",str_replace(")","",str_replace("(","",str_replace("'","",$where))));
 				
 				if ($field=="*"){
+			
+					for ($i=0; $i<count($where); $i++){
+						
+						$likex   = explode("like",trim($where[$i]));
+						
+						if (count($likex)>1){
+							
+							$like[]  = str_replace("%","",trim($likex[1]));
+							$col[]   = trim($likex[0]);
+						
+						} 
+						
+						$wheree   = explode("=",trim($where[$i]));
+						
+						if (count($wheree)>1){
+							
+							$wherex[]  = trim($wheree[1]);
+							$colw[]   = trim($wheree[0]);
+						}
+							
+					} 
+					
+					$this->conn->write($command,true);
+						
+		
+				} else {	
+					
+					for ($i=0; $i<count($where); $i++){
+						
+						$likex   = explode("like",trim($where[$i]));
+						
+						if (count($likex)>1){
+							
+							$like[]  = str_replace("%","",trim($likex[1]));
+							$col[]   = trim($likex[0]);
+						
+						} 
+						
+						$wheree   = explode("=",trim($where[$i]));
+						
+						if (count($wheree)>1){
+							
+							$wherex[]  = trim($wheree[1]);
+							$colw[]   = trim($wheree[0]);
+						}
+							
+					} 
 					
 					$this->conn->write($command,false);
-							
-					for ($i=0; $i<count($where); $i++){
-						
-						$likex   = explode("like",trim($where[$i]));
-						
-						if (count($likex)>1){
-							
-							$like[]  = str_replace("%","",trim($likex[1]));
-							$col[]   = trim($likex[0]);
-						
-						} else {
-							
-							$wherex[]  = trim($where[$i]);
-						
-						}
-							
-					} 
-
-					for ($i=0; $i<count($wherex); $i++){
-						
-							if ($i == (count($wherex)-1)){
-								
-								$this->conn->write("?".trim($wherex[$i]),true);
-									
-							} else {
-										
-								$this->conn->write("?".trim($wherex[$i]),false);
-							} 
-						
-					}
-		
-				} else {
-					
-					$this->conn->write($command,false);	
-					$this->conn->write("=.proplist=".$field,false);	
-					
-					for ($i=0; $i<count($where); $i++){
-						
-						$likex   = explode("like",trim($where[$i]));
-						
-						if (count($likex)>1){
-							
-							$like[]  = str_replace("%","",trim($likex[1]));
-							$col[]   = trim($likex[0]);
-						
-						} else {
-							
-							$wherex[]  = trim($where[$i]);
-						
-						}
-							
-					} 
-
-					for ($i=0; $i<count($wherex); $i++){
-						
-							if ($i == (count($wherex)-1)){
-								
-								$this->conn->write("?".trim($wherex[$i]),true);
-									
-							} else {
-										
-								$this->conn->write("?".trim($wherex[$i]),false);
-							} 
-						
-					} 		
+					$this->conn->write("=.proplist=".$field,true);
 					
 				}
 				
@@ -226,8 +210,6 @@ class PHPMIkAPISQL{
 				
 				if ($field=="*"){
 					
-					$this->conn->write($command,false);
-					
 					for ($i=0; $i<count($where); $i++){
 						
 						$likex   = explode("like",trim($where[$i]));
@@ -237,32 +219,22 @@ class PHPMIkAPISQL{
 							$like[]  = str_replace("%","",trim($likex[1]));
 							$col[]   = trim($likex[0]);
 						
-						} else {
-							
-							$wherex[]  = trim($where[$i]);
+						} 
 						
+						$wheree   = explode("=",trim($where[$i]));
+						
+						if (count($wheree)>1){
+							
+							$wherex[]  = trim($wheree[1]);
+							$colw[]   = trim($wheree[0]);
 						}
 							
 					} 
-
-					for ($i=0; $i<count($wherex); $i++){
-						
-							if ($i == (count($wherex)-1)){
-								
-								$this->conn->write("?".trim($wherex[$i]),true);
-									
-							} else {
-										
-								$this->conn->write("?".trim($wherex[$i]),false);
-							} 
-						
-					}
+					
+					$this->conn->write($command,true);
 					
 				} else {
 					
-					$this->conn->write($command,false);	
-					$this->conn->write("=.proplist=".$field,false);	
-					
 					for ($i=0; $i<count($where); $i++){
 						
 						$likex   = explode("like",trim($where[$i]));
@@ -272,26 +244,20 @@ class PHPMIkAPISQL{
 							$like[]  = str_replace("%","",trim($likex[1]));
 							$col[]   = trim($likex[0]);
 						
-						} else {
-							
-							$wherex[]  = trim($where[$i]);
+						} 
 						
+						$wheree   = explode("=",trim($where[$i]));
+						
+						if (count($wheree)>1){
+							
+							$wherex[]  = trim($wheree[1]);
+							$colw[]   = trim($wheree[0]);
 						}
 							
 					} 
-
-					for ($i=0; $i<count($wherex); $i++){
-						
-							if ($i == (count($wherex)-1)){
-								
-								$this->conn->write("?".trim($wherex[$i]),true);
-									
-							} else {
-										
-								$this->conn->write("?".trim($wherex[$i]),false);
-							} 
-						
-					}
+					
+					$this->conn->write($command,false);
+					$this->conn->write("=.proplist=".$field,true);
 					
 				}
 				
@@ -299,7 +265,8 @@ class PHPMIkAPISQL{
 				$this->output = $this->conn->parseResponse($result);
 				$this->output = $this->Sorting($this->output);				
 			} 		
-				
+			
+			// Search With Like
 			if (count($like)>=1){
 				
 				for ($i=0; $i<count($like); $i++){
@@ -309,7 +276,19 @@ class PHPMIkAPISQL{
 				}
 		
 			}
-
+			
+			// Search Equal
+			if (count($wherex)>=1){
+				
+				for ($i=0; $i<count($wherex); $i++){
+					
+					$this->output = $this->SearchEqual($this->output,$wherex[$i],$colw[$i]);
+				
+				}
+		
+			}
+			
+			// Limit 
 			if (!empty($limit)){
 						
 				$this->output = array_slice($this->output,0,$limit);
@@ -670,13 +649,26 @@ class PHPMIkAPISQL{
 	private function SearchLike($data,$key,$val){
 		
 		$this->column  = $val;
-		$pattern 	   = "/$key/";
+		$pattern 	   = "/$key/i";
 
 		$output = array_filter($data, function($a) use($pattern)  {
 			return preg_match_all($pattern, $a[$this->column]);
 		});
 
 		return $output;
+	
+	}
+	
+	private function SearchEqual($data,$key,$val){
+		
+		$this->column  = $val;
+		$pattern 	   = $key;
+
+		$output = array_filter($data, function ($value) use ($pattern) {
+			return (strtolower($value[$this->column])==$pattern);
+		});
+
+		return $data;
 	
 	}
 	
